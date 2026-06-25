@@ -53,7 +53,7 @@ export default function LandingPage() {
             </Link>
             {isAuthenticated ? (
               <Link to="/dashboard" className="text-[#09090b] bg-[#eab308] px-3 py-1 hover:bg-[#fafafa] transition-colors">
-                [ {user?.role === 'organizer' || user?.role === 'admin' ? 'NODE_ADMIN' : 'DASHBOARD'} ]
+                [ {user?.role === 'ORGANIZER' || user?.role === 'ADMIN' ? 'NODE_ADMIN' : 'DASHBOARD'} ]
               </Link>
             ) : (
               <Link to="/login" className="text-[#a1a1aa] hover:text-[#eab308] transition-colors">
