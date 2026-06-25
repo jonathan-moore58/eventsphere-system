@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("ATTENDEE") // ADMIN | ORGANIZER | ATTENDEE | GUEST
+  isVerified   Boolean  @default(false)
+  otpCode      String?
+  otpExpiry    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organizer    Organizer?
+  attendee     Attendee?
+  notifications Notification[]
+  auditLogs    AuditLog[]
+}
+
+model Organizer {
+  id               String  @id @default(cuid())
+  userId           String  @unique
+  organizationName String?
+  bio              String?
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events           Event[]
+}
+
+model Attendee {
+  id       String    @id @default(cuid())
+  userId   String    @unique
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  organizerId String
+  title       String
+  description String
+  category    String
+  venue       String
+  latitude    Float?
+  longitude   Float?
+  startTime   DateTime
+  endTime     DateTime
+  capacity    Int
+  status      String   @default("DRAFT") // DRAFT | PUBLISHED | PAUSED | CANCELLED
+  visibility  String   @default("PUBLIC") // PUBLIC | PRIVATE | UNLISTED
+  bannerImage String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organizer    Organizer      @relation(fields: [organizerId], references: [id])
+  ticketTypes  TicketType[]
+  bookings     Booking[]
+  notifications Notification[]
+}
+
+model TicketType {
+  id              String   @id @default(cuid())
+  eventId         String
+  name            String
+  price           Float
+  qtyTotal        Int
+  qtyRemaining    Int
+  saleStart       DateTime
+  saleEnd         DateTime
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  bookingItems    BookingItem[]
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  attendeeId  String
+  eventId     String
+  totalAmount Float
+  status      String   @default("PENDING") // PENDING | CONFIRMED | CANCELLED
+  qrCode      String?  @unique
+  createdAt   DateTime @default(now())
+
+  attendee    Attendee      @relation(fields: [attendeeId], references: [id])
+  event       Event         @relation(fields: [eventId], references: [id])
+  payment     Payment?
+  items       BookingItem[]
+}
+
+model BookingItem {
+  id           String     @id @default(cuid())
+  bookingId    String
+  ticketTypeId String
+  quantity     Int
+  unitPrice    Float
+  booking      Booking    @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+}
+
+model Payment {
+  id                  String   @id @default(cuid())
+  bookingId           String   @unique
+  amount              Float
+  gatewayTransactionId String  @default("MOCK_TXN") // MOCKED
+  status              String   @default("PENDING") // PENDING | SUCCESS | FAILED | REFUNDED
+  processedAt         DateTime?
+  booking             Booking  @relation(fields: [bookingId], references: [id])
+}
+
+model Notification {
+  id             String   @id @default(cuid())
+  userId         String
+  eventId        String?
+  type           String   // BOOKING_CONFIRM | EVENT_REMINDER | CANCELLATION | UPDATE
+  channel        String   // EMAIL | SMS
+  message        String
+  status         String   @default("SENT") // SENT | FAILED | RETRYING
+  retryCount     Int      @default(0)
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id])
+  event          Event?   @relation(fields: [eventId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  timestamp  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}

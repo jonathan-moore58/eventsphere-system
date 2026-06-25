@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@layer base {
+  body {
+    background-color: #09090b; /* Zinc 950 */
+    color: #fafafa; /* Zinc 50 */
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  ::selection {
+    background-color: #eab308; /* Yellow 500 */
+    color: #09090b;
+  }
+}
+
+@layer utilities {
+  /* Typography Tokens */
+  .font-display-custom { font-family: 'Bebas Neue', sans-serif; }
+  .font-mono-custom { font-family: 'Space Mono', monospace; }
+  .font-body-custom { font-family: 'Inter', sans-serif; }
+
+  /* Structural UI Borders */
+  .brutal-border {
+    border: 1px solid #27272a; /* Zinc 800 */
+  }
+  .hover-brutal-border:hover {
+    border-color: #eab308; /* Yellow 500 */
+  }
+
+  /* Physical Ticket True Clipping Masks */
+  .ticket-mask-both {
+    -webkit-mask-image: 
+      radial-gradient(circle at 15px 0, transparent 10px, black 10.5px),
+      radial-gradient(circle at 15px 20px, transparent 10px, black 10.5px),
+      linear-gradient(black, black);
+    -webkit-mask-size: 30px 20px, 30px 20px, 100% calc(100% - 40px);
+    -webkit-mask-position: top center, bottom center, center;
+    -webkit-mask-repeat: repeat-x, repeat-x, no-repeat;
+    
+    mask-image: 
+      radial-gradient(circle at 15px 0, transparent 10px, black 10.5px),
+      radial-gradient(circle at 15px 20px, transparent 10px, black 10.5px),
+      linear-gradient(black, black);
+    mask-size: 30px 20px, 30px 20px, 100% calc(100% - 40px);
+    mask-position: top center, bottom center, center;
+    mask-repeat: repeat-x, repeat-x, no-repeat;
+  }
+  
+  .ticket-mask-top {
+    -webkit-mask-image: 
+      radial-gradient(circle at 15px 0, transparent 10px, black 10.5px),
+      linear-gradient(black, black);
+    -webkit-mask-size: 30px 20px, 100% calc(100% - 20px);
+    -webkit-mask-position: top center, bottom center;
+    -webkit-mask-repeat: repeat-x, no-repeat;
+    
+    mask-image: 
+      radial-gradient(circle at 15px 0, transparent 10px, black 10.5px),
+      linear-gradient(black, black);
+    mask-size: 30px 20px, 100% calc(100% - 20px);
+    mask-position: top center, bottom center;
+    mask-repeat: repeat-x, no-repeat;
+  }
+  
+  .ticket-mask-horizontal {
+    -webkit-mask-image: 
+      radial-gradient(circle at 0 15px, transparent 10px, black 10.5px),
+      radial-gradient(circle at 100% 15px, transparent 10px, black 10.5px),
+      linear-gradient(black, black);
+    -webkit-mask-size: 20px 30px, 20px 30px, calc(100% - 40px) 100%;
+    -webkit-mask-position: left center, right center, center;
+    -webkit-mask-repeat: repeat-y, repeat-y, no-repeat;
+    
+    mask-image: 
+      radial-gradient(circle at 0 15px, transparent 10px, black 10.5px),
+      radial-gradient(circle at 100% 15px, transparent 10px, black 10.5px),
+      linear-gradient(black, black);
+    mask-size: 20px 30px, 20px 30px, calc(100% - 40px) 100%;
+    mask-position: left center, right center, center;
+    mask-repeat: repeat-y, repeat-y, no-repeat;
+  }
+
+  @media (min-width: 768px) {
+    .md\:ticket-mask-horizontal {
+      -webkit-mask-image: 
+        radial-gradient(circle at 0 15px, transparent 10px, black 10.5px),
+        radial-gradient(circle at 100% 15px, transparent 10px, black 10.5px),
+        linear-gradient(black, black);
+      -webkit-mask-size: 20px 30px, 20px 30px, calc(100% - 40px) 100%;
+      -webkit-mask-position: left center, right center, center;
+      -webkit-mask-repeat: repeat-y, repeat-y, no-repeat;
+      
+      mask-image: 
+        radial-gradient(circle at 0 15px, transparent 10px, black 10.5px),
+        radial-gradient(circle at 100% 15px, transparent 10px, black 10.5px),
+        linear-gradient(black, black);
+      mask-size: 20px 30px, 20px 30px, calc(100% - 40px) 100%;
+      mask-position: left center, right center, center;
+      mask-repeat: repeat-y, repeat-y, no-repeat;
+    }
+  }
+
+  /* Barcodes */
+  .barcode-vertical {
+    background-image: repeating-linear-gradient(
+      0deg,
+      #09090b,
+      #09090b 3px,
+      transparent 3px,
+      transparent 7px,
+      #09090b 7px,
+      #09090b 12px,
+      transparent 12px,
+      transparent 14px,
+      #09090b 14px,
+      #09090b 20px,
+      transparent 20px,
+      transparent 24px
+    );
+  }
+
+  .barcode-horizontal-white {
+    background-image: repeating-linear-gradient(
+      90deg,
+      #fafafa,
+      #fafafa 2px,
+      transparent 2px,
+      transparent 5px,
+      #fafafa 5px,
+      #fafafa 9px,
+      transparent 9px,
+      transparent 11px,
+      #fafafa 11px,
+      #fafafa 16px,
+      transparent 16px,
+      transparent 20px
+    );
+  }
+
+  /* Smooth scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #09090b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #27272a;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #eab308;
+  }
+}
+
+@layer utilities {
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    display: flex;
+  }
+
+  .marquee-content {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
