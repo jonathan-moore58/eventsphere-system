@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+const isProd = import.meta.env.PROD;
+const defaultApiUrl = isProd 
+  ? 'https://efficient-reprieve-production-9d02.up.railway.app/api/v1'
+  : 'http://localhost:5000/api/v1';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || defaultApiUrl,
   headers: {
     'Content-Type': 'application/json'
   }
