@@ -14,7 +14,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const queryClient = new QueryClient();
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'PLACEHOLDER_CLIENT_ID';
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1057979813470-vvubmt416r4dnjdtgpqqlcgmk4p53ntt.apps.googleusercontent.com';
 
 function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
