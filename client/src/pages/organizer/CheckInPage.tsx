@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import api from '../../lib/api';
 import toast from 'react-hot-toast';
@@ -10,20 +11,23 @@ export default function CheckInPage() {
   const [lastScan, setLastScan] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const { data: stats, refetch: refetchStats } = useQuery({
+    queryKey: ['eventStats', eventId],
+    queryFn: async () => {
+      const { data } = await api.get(`/events/${eventId}/stats`);
+      return data;
+    },
+    refetchInterval: 5000 // poll every 5s for live counter
+  });
+
   useEffect(() => {
     const scanner = new Html5QrcodeScanner('reader', { fps: 10, qrbox: { width: 250, height: 250 } }, false);
     
     scanner.render(async (decodedText) => {
-      // Pause scanning
       scanner.pause();
       await handleCheckIn(decodedText);
-      // Resume after 3 seconds
-      setTimeout(() => {
-        scanner.resume();
-      }, 3000);
-    }, (err) => {
-      // ignore
-    });
+      setTimeout(() => scanner.resume(), 3000);
+    }, (err) => {});
 
     return () => {
       scanner.clear().catch(console.error);
@@ -34,8 +38,15 @@ export default function CheckInPage() {
     try {
       setLoading(true);
       const res = await api.post('/bookings/checkin', { bookingId });
-      setLastScan({ success: true, message: res.data.message, attendee: res.data.attendee, ref: bookingId });
-      toast.success(`ADMITTED: ${res.data.attendee}`);
+      setLastScan({ 
+        success: true, 
+        message: res.data.message, 
+        attendee: res.data.attendee, 
+        ticketType: res.data.ticketType,
+        ref: bookingId 
+      });
+      toast.success(`ADMITTED: ${res.data.attendee} (${res.data.ticketType})`);
+      refetchStats();
     } catch (err: any) {
       setLastScan({ success: false, message: err.response?.data?.error || 'AUTHORIZATION_DENIED', ref: bookingId });
       toast.error('AUTHORIZATION_DENIED');
@@ -58,10 +69,19 @@ export default function CheckInPage() {
             ENTRY VERIFICATION
           </h1>
         </div>
-        <div className="flex gap-4">
+        <div className="flex items-center gap-6">
+          <div className="text-right border-r border-[#27272a] pr-6">
+            <div className="font-mono-custom text-xs text-[#a1a1aa] mb-2 font-bold uppercase tracking-widest">LIVE_ADMISSIONS</div>
+            <div className="text-4xl font-display-custom font-bold text-[#fafafa]">
+              {stats ? `${stats.checkedInCount} / ${stats.totalBookings}` : '...'}
+            </div>
+            <div className="text-xs text-[#a1a1aa] font-mono-custom uppercase tracking-widest mt-1">
+              CAPACITY: {stats?.capacity || '...'}
+            </div>
+          </div>
           <Link to="/dashboard/organizer">
             <button className="bg-[#27272a] text-[#fafafa] font-mono-custom font-bold uppercase text-sm px-6 py-4 hover:bg-[#eab308] hover:text-[#09090b] transition-colors border border-[#27272a] hover:border-[#eab308]">
-              RETURN TO SOUNDBOARD
+              RETURN
             </button>
           </Link>
         </div>
@@ -137,15 +157,29 @@ export default function CheckInPage() {
                 <div className="w-full border-t-2 border-dashed border-[#27272a] pt-6 mt-2 mb-6">
                   {lastScan.success ? (
                     <>
-                      <p className="font-mono-custom text-[10px] text-[#a1a1aa] uppercase tracking-widest mb-1">TARGET_ENTITY:</p>
-                      <p className="font-mono-custom text-xl text-[#fafafa] font-bold uppercase mb-4">{lastScan.attendee}</p>
+                      <div className="font-mono-custom text-xs font-bold text-[#10b981] mb-1">
+                ACCESS_GRANTED
+              </div>
+              <div className="text-2xl font-display-custom font-bold text-[#fafafa] mb-2 uppercase">
+                {lastScan.attendee}
+              </div>
+              {lastScan.ticketType && (
+                <div className="inline-block px-3 py-1 border border-[#eab308] text-[#eab308] text-xs font-mono-custom font-bold tracking-widest uppercase mb-4 bg-[#eab308]/10">
+                  {lastScan.ticketType}
+                </div>
+              )}
+              <div className="font-mono-custom text-[10px] text-[#a1a1aa] uppercase">
+                REF: {lastScan.ref}
+              </div>
                     </>
-                  ) : null}
-                  <p className="font-mono-custom text-[10px] text-[#a1a1aa] uppercase tracking-widest mb-1">SYS.RESPONSE:</p>
-                  <p className="font-mono-custom text-sm text-[#fafafa] uppercase">{lastScan.message}</p>
-                  
-                  <p className="font-mono-custom text-[10px] text-[#a1a1aa] uppercase tracking-widest mt-4 mb-1">SCANNED_REF:</p>
-                  <p className="font-mono-custom text-xs text-[#fafafa]">{lastScan.ref}</p>
+                  ) : (
+                    <>
+                      <p className="font-mono-custom text-[10px] text-[#a1a1aa] uppercase tracking-widest mb-1">SYS.RESPONSE:</p>
+                      <p className="font-mono-custom text-sm text-[#fafafa] uppercase">{lastScan.message}</p>
+                      <p className="font-mono-custom text-[10px] text-[#a1a1aa] uppercase tracking-widest mt-4 mb-1">SCANNED_REF:</p>
+                      <p className="font-mono-custom text-xs text-[#fafafa]">{lastScan.ref}</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

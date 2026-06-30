@@ -12,6 +12,9 @@ import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import OTPVerifyPage from './pages/auth/OTPVerifyPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import ProfilePage from './pages/auth/ProfilePage';
 
 // Public Pages
 import LandingPage from './pages/public/LandingPage';
@@ -50,6 +53,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify-otp" element={<OTPVerifyPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
 
         <Route path="/booking/:eventId" element={<ProtectedRoute />}>
@@ -58,6 +63,7 @@ function App() {
 
         <Route path="/dashboard" element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="attendee" element={<AttendeeDashboard />} />
             <Route 
               path="organizer" 

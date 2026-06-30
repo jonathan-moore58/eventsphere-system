@@ -10,6 +10,7 @@ router.use(requireAuth); // All booking routes require auth
 router.get('/my-bookings', requireRole('ATTENDEE'), bookingsController.myBookings);
 router.post('/', requireRole('ATTENDEE'), bookingsController.createBooking);
 router.post('/:id/confirm', requireRole('ATTENDEE'), bookingsController.confirmBooking);
+router.post('/:id/cancel', requireRole('ATTENDEE'), bookingsController.cancelBooking);
 
 router.post('/checkin', requireRole('ORGANIZER'), bookingsController.checkIn);
 

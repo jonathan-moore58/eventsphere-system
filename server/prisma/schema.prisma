@@ -3,21 +3,25 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  role         String   @default("ATTENDEE") // ADMIN | ORGANIZER | ATTENDEE | GUEST
-  isVerified   Boolean  @default(false)
-  otpCode      String?
-  otpExpiry    DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  name                String
+  email               String   @unique
+  passwordHash        String
+  role                String   @default("ATTENDEE") // ADMIN | ORGANIZER | ATTENDEE | GUEST
+  isVerified          Boolean  @default(false)
+  otpCode             String?
+  otpExpiry           DateTime?
+  failedLoginAttempts Int      @default(0)
+  lockedUntil         DateTime?
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   organizer    Organizer?
   attendee     Attendee?
@@ -74,6 +78,8 @@ model TicketType {
   qtyRemaining    Int
   saleStart       DateTime
   saleEnd         DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
   event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   bookingItems    BookingItem[]
 }
@@ -85,7 +91,9 @@ model Booking {
   totalAmount Float
   status      String   @default("PENDING") // PENDING | CONFIRMED | CANCELLED
   qrCode      String?  @unique
+  checkedIn   Boolean  @default(false)
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   attendee    Attendee      @relation(fields: [attendeeId], references: [id])
   event       Event         @relation(fields: [eventId], references: [id])

@@ -3,8 +3,10 @@ import { useEvents } from '../../hooks/useEvents';
 import { PosterCard } from '../../components/events/PosterCard';
 
 export default function EventsPage() {
-  const { data: events, isLoading, error } = useEvents();
   const [filter, setFilter] = useState('ALL');
+  const [dateFilter, setDateFilter] = useState('');
+
+  const { data: events, isLoading, error } = useEvents({ category: filter, dateFilter });
 
   if (isLoading) return (
     <div className="min-h-screen bg-[#09090b] p-8 flex items-center justify-center">
@@ -22,10 +24,7 @@ export default function EventsPage() {
     </div>
   );
 
-  const filteredEvents = events?.filter(event => {
-    if (filter === 'ALL') return true;
-    return event.category.toUpperCase() === filter;
-  });
+  const filteredEvents = events || [];
 
   return (
     <div className="min-h-screen bg-[#09090b] text-[#fafafa] font-body-custom pt-24 pb-32">
@@ -53,6 +52,23 @@ export default function EventsPage() {
                 }`}
               >
                 {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Date Filter */}
+          <div className="flex gap-2 bg-[#18181b] p-2 brutal-border mt-4 md:mt-0">
+            {['', 'TODAY', 'WEEK', 'MONTH'].map((dt) => (
+              <button
+                key={dt || 'ALL_TIME'}
+                onClick={() => setDateFilter(dt)}
+                className={`font-mono-custom text-[10px] sm:text-xs font-bold px-4 py-2 uppercase transition-colors ${
+                  dateFilter === dt 
+                    ? 'bg-[#eab308] text-[#09090b]' 
+                    : 'text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#27272a]'
+                }`}
+              >
+                {dt || 'ALL TIME'}
               </button>
             ))}
           </div>

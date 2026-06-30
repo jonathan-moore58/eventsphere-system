@@ -49,15 +49,15 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-4 md:gap-8 font-mono-custom text-xs font-bold uppercase">
             <Link to="/events" className="text-[#a1a1aa] hover:text-[#eab308] transition-colors">
-              [ DIRECTORY ]
+              Explore Events
             </Link>
             {isAuthenticated ? (
               <Link to="/dashboard" className="text-[#09090b] bg-[#eab308] px-3 py-1 hover:bg-[#fafafa] transition-colors">
-                [ {user?.role === 'ORGANIZER' || user?.role === 'ADMIN' ? 'NODE_ADMIN' : 'DASHBOARD'} ]
+                Dashboard
               </Link>
             ) : (
               <Link to="/login" className="text-[#a1a1aa] hover:text-[#eab308] transition-colors">
-                [ AUTH ]
+                Sign In
               </Link>
             )}
           </div>
@@ -66,32 +66,32 @@ export default function LandingPage() {
         {/* ==========================================
             HERO: THE TICKET STUB
         ========================================== */}
-        <section className="relative pt-24 pb-12 px-4 md:px-8 w-full flex justify-center">
+        <section className="relative pt-12 pb-8 px-4 md:px-8 w-full flex justify-center min-h-[calc(100vh-80px)] items-center">
           <div className="w-full max-w-6xl relative z-10">
 
             {/* The Physical Ticket */}
             <div className="bg-[#eab308] text-[#09090b] relative shadow-2xl flex flex-col md:flex-row ticket-mask-both md:ticket-mask-horizontal">
 
               {/* Ticket Main Body */}
-              <div className="flex-1 p-8 md:p-16 pt-16 md:pt-16 pb-12 md:pb-16 relative flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#09090b]/20 border-dashed">
+              <div className="flex-1 p-6 md:p-10 pt-10 md:pt-10 pb-8 md:pb-10 relative flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#09090b]/20 border-dashed">
 
                 {/* Meta Header */}
-                <div className="flex justify-between items-start mb-12">
+                <div className="flex justify-between items-start mb-6">
                   <div className="font-mono-custom text-xs font-bold uppercase tracking-widest">
-                    EVENTSPHERE_SYSTEM <br />
-                    PLATFORM_ACCESS_NODE
+                    EVENTSPHERE <br />
+                    Welcome
                   </div>
                   <div className="font-mono-custom text-xs font-bold uppercase text-right">
-                    SYS.TIME // {time} <br />
+                    TIME // {time} <br />
                     LOC // PAKISTAN
                   </div>
                 </div>
 
-                <h1 className="font-display-custom text-7xl md:text-[8rem] lg:text-[10rem] leading-[0.85] tracking-tight mb-8">
-                  LIVE<br />ACCESS.
+                <h1 className="font-display-custom text-7xl md:text-[7rem] lg:text-[8.5rem] leading-[0.85] tracking-tight mb-4 uppercase">
+                  LIVE<br />EVENTS.
                 </h1>
 
-                <p className="font-mono-custom text-sm md:text-base max-w-lg font-bold mb-12 border-l-4 border-[#09090b] pl-4">
+                <p className="font-mono-custom text-sm md:text-base max-w-lg font-bold mb-8 border-l-4 border-[#09090b] pl-4">
                   THE AUTHENTIC PLATFORM FOR LIVE EVENTS.
                   DISCOVER HEADLINERS, SECURE YOUR SPOT, AND POWER YOUR NEXT SHOW.
                 </p>
@@ -99,13 +99,13 @@ export default function LandingPage() {
                 <div className="flex flex-col sm:flex-row gap-4 mt-auto">
                   <Link to="/events" className="w-full sm:w-auto">
                     <button className="w-full px-8 py-4 bg-[#09090b] text-[#eab308] font-mono-custom font-bold uppercase text-sm hover:bg-[#18181b] transition-colors flex items-center justify-center gap-3">
-                      ISSUE PASS
+                      DISCOVER EVENTS
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                     </button>
                   </Link>
                   <Link to="/register" className="w-full sm:w-auto">
                     <button className="w-full px-8 py-4 bg-transparent border-2 border-[#09090b] text-[#09090b] font-mono-custom font-bold uppercase text-sm hover:bg-[#09090b] hover:text-[#eab308] transition-colors flex items-center justify-center">
-                      SYSTEM LOGIN
+                      HOST AN EVENT
                     </button>
                   </Link>
                 </div>
@@ -115,12 +115,12 @@ export default function LandingPage() {
               <div className="w-full md:w-48 lg:w-64 bg-[#eab308] p-8 flex flex-col justify-between items-center relative min-h-[250px]">
 
                 <div className="w-full text-center mb-6">
-                  <div className="font-display-custom text-4xl transform md:rotate-90 md:translate-y-16 tracking-widest">ADMIT ONE</div>
+                  <div className="font-display-custom text-4xl transform md:rotate-90 tracking-widest">ADMIT ONE</div>
                 </div>
 
                 {/* Massive CSS Barcode */}
                 <div className="barcode-vertical w-16 h-32 md:h-64 mt-auto mb-6 md:mb-12 opacity-80 hidden md:block"></div>
-                <div className="barcode-horizontal-white w-full h-16 opacity-80 block md:hidden bg-blend-difference filter invert"></div>
+                <div className="barcode-horizontal-white w-full h-16 opacity-80 block md:hidden bg-blend-difference filter invert mb-6"></div>
 
                 <div className="font-mono-custom text-xs font-bold">NO: 8249-112</div>
               </div>
@@ -134,8 +134,8 @@ export default function LandingPage() {
         <section className="border-y border-[#27272a] bg-[#09090b] py-4 mt-12 overflow-hidden flex items-center">
           <div className="marquee-container font-mono-custom text-xs text-[#eab308] tracking-widest font-bold">
             <div className="marquee-content">
-              <span className="pr-4">SYSTEM STATUS: ONLINE // EVENTS_HOSTED: 500+ // TICKETS_PROCESSED: 50,000+ // UPTIME: 99.9% // SECURE_NODE_ACTIVE // SYSTEM STATUS: ONLINE // EVENTS_HOSTED: 500+ // TICKETS_PROCESSED: 50,000+ // UPTIME: 99.9% // SECURE_NODE_ACTIVE //</span>
-              <span className="pr-4">SYSTEM STATUS: ONLINE // EVENTS_HOSTED: 500+ // TICKETS_PROCESSED: 50,000+ // UPTIME: 99.9% // SECURE_NODE_ACTIVE // SYSTEM STATUS: ONLINE // EVENTS_HOSTED: 500+ // TICKETS_PROCESSED: 50,000+ // UPTIME: 99.9% // SECURE_NODE_ACTIVE //</span>
+              <span className="pr-4">Discover amazing events near you // Get your tickets today // Power your next big show // Discover amazing events near you // Get your tickets today // Power your next big show //</span>
+              <span className="pr-4">Discover amazing events near you // Get your tickets today // Power your next big show // Discover amazing events near you // Get your tickets today // Power your next big show //</span>
             </div>
           </div>
         </section>
@@ -146,12 +146,12 @@ export default function LandingPage() {
         <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b-2 border-[#27272a] pb-6 gap-6">
             <div>
-              <div className="font-mono-custom text-sm text-[#eab308] font-bold mb-2 uppercase">// SEC:01</div>
+              <div className="font-mono-custom text-sm text-[#eab308] font-bold mb-2 uppercase">FEATURED</div>
               <h2 className="font-display-custom text-6xl md:text-7xl uppercase tracking-tight leading-none text-[#fafafa]">HEADLINERS</h2>
             </div>
             <Link to="/events">
               <button className="font-mono-custom text-sm uppercase text-[#fafafa] border border-[#27272a] px-6 py-3 hover:bg-[#fafafa] hover:text-[#09090b] transition-colors flex items-center gap-2 font-bold">
-                VIEW ALL LOGS <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+                VIEW ALL EVENTS <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
               </button>
             </Link>
           </div>
@@ -169,15 +169,15 @@ export default function LandingPage() {
         <section className="py-24 border-t border-[#27272a] bg-[#111]">
           <div className="max-w-7xl mx-auto px-4 md:px-8">
             <div className="mb-16">
-              <div className="font-mono-custom text-sm text-[#eab308] font-bold mb-2 uppercase">// SEC:02</div>
-              <h2 className="font-display-custom text-6xl md:text-7xl uppercase tracking-tight leading-none text-[#fafafa]">ENTRY PROTOCOL</h2>
+              <div className="font-mono-custom text-sm text-[#eab308] font-bold mb-2 uppercase">HOW IT WORKS</div>
+              <h2 className="font-display-custom text-6xl md:text-7xl uppercase tracking-tight leading-none text-[#fafafa]">HOW IT WORKS</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#27272a] border border-[#27272a]">
               {[
-                { step: '01', title: 'LOCATE', desc: 'Scan the network for active events in your sector.' },
-                { step: '02', title: 'AUTHORIZE', desc: 'Secure payment via encrypted gateways (Card, JazzCash).' },
-                { step: '03', title: 'EXECUTE', desc: 'Present digital barcode at checkpoint for instant access.' }
+                { step: '01', title: 'DISCOVER', desc: 'Scan the network for active events in your sector.' },
+                { step: '02', title: 'BOOK', desc: 'Secure payment via encrypted gateways (Card, JazzCash).' },
+                { step: '03', title: 'ATTEND', desc: 'Present digital barcode at checkpoint for instant access.' }
               ].map((item, i) => (
                 <div key={i} className="bg-[#18181b] p-10 flex flex-col h-full hover:bg-[#1f1f22] transition-colors">
                   <div className="font-mono-custom text-4xl text-[#eab308] font-bold mb-12 opacity-50">{item.step}</div>
@@ -194,8 +194,8 @@ export default function LandingPage() {
         ========================================== */}
         <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
           <div className="mb-12 border-b-2 border-[#27272a] pb-6">
-            <div className="font-mono-custom text-sm text-[#eab308] font-bold mb-2 uppercase">// SEC:03</div>
-            <h2 className="font-display-custom text-6xl md:text-7xl uppercase tracking-tight leading-none text-[#fafafa]">BACKSTAGE ACCESS</h2>
+            <div className="font-mono-custom text-sm text-[#eab308] font-bold mb-2 uppercase">PLATFORM FEATURES</div>
+            <h2 className="font-display-custom text-6xl md:text-7xl uppercase tracking-tight leading-none text-[#fafafa]">PLATFORM FEATURES</h2>
             <p className="font-mono-custom text-sm text-[#a1a1aa] uppercase mt-4 max-w-2xl">
               INFRASTRUCTURE BUILT FOR ORGANIZERS WHO DEMAND ABSOLUTE CONTROL OVER THEIR PRODUCTION.
             </p>
@@ -211,7 +211,7 @@ export default function LandingPage() {
               <div key={i} className="brutal-border bg-[#18181b] p-8 flex flex-col group hover:border-[#eab308] transition-colors">
                 <div className="flex justify-between items-center border-b border-[#27272a] pb-4 mb-6">
                   <h3 className="font-display-custom text-3xl text-[#fafafa] group-hover:text-[#eab308] transition-colors">{feat.title}</h3>
-                  <span className="font-mono-custom text-xs text-[#a1a1aa] bg-[#09090b] px-2 py-1">SYS.{feat.id}</span>
+                  <span className="font-mono-custom text-xs text-[#a1a1aa] bg-[#09090b] px-2 py-1">FEATURE</span>
                 </div>
                 <p className="font-mono-custom text-sm text-[#a1a1aa] leading-relaxed uppercase">{feat.text}</p>
               </div>
@@ -225,10 +225,10 @@ export default function LandingPage() {
         <section className="py-32 border-t border-[#27272a] bg-[#18181b] flex justify-center items-center px-4">
           <div className="text-center max-w-3xl">
             <h2 className="font-display-custom text-6xl md:text-8xl text-[#fafafa] mb-8 leading-none tracking-tight">
-              INITIATE <br /><span className="text-[#eab308]">PRODUCTION.</span>
+              HOST <br /><span className="text-[#eab308]">YOUR EVENT.</span>
             </h2>
             <p className="font-mono-custom text-sm text-[#a1a1aa] mb-12 uppercase font-bold">
-              SYSTEM STANDING BY. LAUNCH YOUR NEXT EVENT.
+              GET STARTED TODAY. LAUNCH YOUR NEXT EVENT.
             </p>
             <Link to="/register">
               <button className="px-12 py-5 bg-[#fafafa] text-[#09090b] font-mono-custom font-bold uppercase text-sm hover:bg-[#eab308] transition-colors flex items-center justify-center gap-3 mx-auto">
@@ -248,7 +248,7 @@ export default function LandingPage() {
               © 2026 EVENTSPHERE
             </div>
             <div className="flex gap-6 font-mono-custom text-xs font-bold text-[#a1a1aa]">
-              <span className="hover:text-[#eab308] cursor-pointer uppercase transition-colors">PROTOCOL</span>
+              <span className="hover:text-[#eab308] cursor-pointer uppercase transition-colors">PRIVACY POLICY</span>
               <span className="hover:text-[#eab308] cursor-pointer uppercase transition-colors">TERMS</span>
               <span className="hover:text-[#eab308] cursor-pointer uppercase transition-colors">CONTACT</span>
             </div>

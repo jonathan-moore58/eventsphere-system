@@ -1,9 +1,10 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import api from '../../lib/api';
+import toast from 'react-hot-toast';
 import type { Event } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Link } from 'react-router-dom';
 
 const mockChartData = [
   { name: 'Mon', revenue: 4000 },
@@ -24,13 +25,40 @@ const mockPieData = [
 const COLORS = ['#eab308', '#fafafa', '#27272a']; // Yellow, White, Zinc
 
 export default function OrganizerDashboard() {
-  const { data: events, isLoading } = useQuery({
+  const { data: events, isLoading, refetch } = useQuery({
     queryKey: ['myEvents'],
     queryFn: async () => {
       const { data } = await api.get<Event[]>('/events/my-events');
       return data;
     }
   });
+
+  const handleClone = async (id: string, title: string) => {
+    try {
+      await toast.promise(api.post(`/events/${id}/clone`), {
+        loading: 'CLONING_MANIFEST...',
+        success: 'MANIFEST_DUPLICATED',
+        error: 'SYS_ERR_CLONE_FAILED'
+      });
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCancel = async (id: string, title: string) => {
+    if (!window.confirm(`Are you sure you want to completely cancel "${title}"? All attendees will be refunded and notified.`)) return;
+    try {
+      await toast.promise(api.post(`/events/${id}/cancel`), {
+        loading: 'PROCESSING_CANCELLATION...',
+        success: 'EVENT_CANCELLED',
+        error: 'SYS_ERR_CANCEL_FAILED'
+      });
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="relative z-10 max-w-7xl mx-auto space-y-12 pb-20">
@@ -150,13 +178,21 @@ export default function OrganizerDashboard() {
                     </span>
                   </td>
                   <td className="px-6 py-5">{event.capacity}</td>
-                  <td className="px-6 py-5 text-right space-x-4">
+                  <td className="px-6 py-5 text-right space-x-4 flex justify-end items-center h-full">
                     <Link to={`/dashboard/organizer/events/${event.id}/analytics`} className="text-[#a1a1aa] hover:text-[#fafafa] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#fafafa]">
                       ANALYTICS
                     </Link>
                     <Link to={`/dashboard/organizer/checkin/${event.id}`} className="text-[#eab308] hover:text-[#fafafa] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#fafafa]">
                       CHECK_IN
                     </Link>
+                    <button onClick={() => handleClone(event.id, event.title)} className="text-[#a1a1aa] hover:text-[#eab308] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#eab308]">
+                      CLONE
+                    </button>
+                    {event.status !== 'CANCELLED' && (
+                      <button onClick={() => handleCancel(event.id, event.title)} className="text-[#ef4444] hover:text-[#fafafa] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#fafafa]">
+                        CANCEL
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

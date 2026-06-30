@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
@@ -13,6 +14,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const queryClient = new QueryClient();
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'PLACEHOLDER_CLIENT_ID';
 
 function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -40,10 +42,12 @@ function SmoothScroll({ children }: { children: React.ReactNode }) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <SmoothScroll>
-        <App />
-      </SmoothScroll>
-    </QueryClientProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <SmoothScroll>
+          <App />
+        </SmoothScroll>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   </StrictMode>,
 )

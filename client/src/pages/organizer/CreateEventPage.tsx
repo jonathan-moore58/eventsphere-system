@@ -15,12 +15,24 @@ export default function CreateEventPage() {
     name: 'GENERAL ADMISSION', price: 50, qtyTotal: 100, saleStart: '', saleEnd: ''
   });
 
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
-      // Create Event
-      const eventRes = await api.post('/events', formData);
+      // Create Event via FormData to support file upload
+      const formDataToSend = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, String(value));
+      });
+      if (bannerFile) {
+        formDataToSend.append('bannerImage', bannerFile);
+      }
+
+      const eventRes = await api.post('/events', formDataToSend, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
       const eventId = eventRes.data.id;
 
       // Create Ticket Type
@@ -97,9 +109,21 @@ export default function CreateEventPage() {
             
             <div className="group">
               <label className="block font-mono-custom text-xs font-bold text-[#a1a1aa] uppercase mb-2 group-focus-within:text-[#eab308] transition-colors">
-                MISSION_BRIEF (DESCRIPTION)
+                SYS.DESCRIPTION
               </label>
-              <textarea required name="description" onChange={handleChange} rows={4} className="w-full bg-[#09090b] border border-[#27272a] px-4 py-3 text-[#fafafa] font-mono-custom text-sm focus:outline-none focus:border-[#eab308] transition-colors" placeholder="ENTER EVENT DETAILS..."></textarea>
+              <textarea required name="description" onChange={handleChange} rows={4} className="w-full bg-[#09090b] border border-[#27272a] px-4 py-3 text-[#fafafa] font-mono-custom text-sm focus:outline-none focus:border-[#eab308] transition-colors resize-none" placeholder="ENTER EVENT DESCRIPTION" />
+            </div>
+
+            <div className="group">
+              <label className="block font-mono-custom text-xs font-bold text-[#a1a1aa] uppercase mb-2 group-focus-within:text-[#eab308] transition-colors">
+                BANNER_IMAGE (OPTIONAL)
+              </label>
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={(e) => setBannerFile(e.target.files ? e.target.files[0] : null)}
+                className="w-full bg-[#09090b] border border-[#27272a] px-4 py-3 text-[#a1a1aa] font-mono-custom text-sm focus:outline-none focus:border-[#eab308] transition-colors file:mr-4 file:py-2 file:px-4 file:border-0 file:text-xs file:font-bold file:bg-[#eab308] file:text-[#09090b] hover:file:bg-[#fafafa] file:transition-colors file:cursor-pointer file:uppercase file:tracking-widest cursor-pointer" 
+              />
             </div>
           </div>
         </div>

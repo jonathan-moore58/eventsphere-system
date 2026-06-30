@@ -1,10 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useMyBookings } from '../../hooks/useBookings';
 import { format, isFuture } from 'date-fns';
 import { Link } from 'react-router-dom';
+import api from '../../lib/api';
+import toast from 'react-hot-toast';
+import { jsPDF } from 'jspdf';
 
 export default function AttendeeDashboard() {
-  const { data: bookings, isLoading } = useMyBookings();
+  const { data: bookings, isLoading, refetch } = useMyBookings();
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const handleCancelBooking = async (id: string) => {
+    if (!window.confirm('Are you sure you want to cancel this booking?')) return;
+    try {
+      setCancellingId(id);
+      await api.post(`/bookings/${id}/cancel`);
+      toast.success('Booking cancelled successfully');
+      refetch();
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'SYS.ERR // CANCEL FAILED');
+    } finally {
+      setCancellingId(null);
+    }
+  };
+
+  const handleExtractPass = (booking: any) => {
+    try {
+      toast.loading('GENERATING_PASS_DATA...', { id: 'pdf' });
+      const doc = new jsPDF();
+      
+      // Black background
+      doc.setFillColor(9, 9, 11); // #09090b
+      doc.rect(0, 0, 210, 297, 'F');
+      
+      // Yellow accent line
+      doc.setFillColor(234, 179, 8); // #eab308
+      doc.rect(20, 20, 2, 100, 'F');
+
+      // System Header
+      doc.setTextColor(234, 179, 8);
+      doc.setFontSize(10);
+      doc.setFont('courier', 'bold');
+      doc.text('// SYS:OFFICIAL_PASS', 25, 25);
+
+      // Event Title
+      doc.setTextColor(250, 250, 250); // #fafafa
+      doc.setFontSize(24);
+      doc.text(booking.event.title.toUpperCase(), 25, 40);
+      
+      // Details
+      doc.setFontSize(12);
+      doc.setTextColor(161, 161, 170); // #a1a1aa
+      doc.text(`REFERENCE_ID : ${booking.id}`, 25, 55);
+      doc.text(`TICKET_TYPE  : ${booking.items[0]?.ticketType.name || 'STANDARD'}`, 25, 65);
+      doc.text(`TOTAL_PAID   : $${booking.totalAmount.toFixed(2)}`, 25, 75);
+      doc.text(`DATE_TIME    : ${format(new Date(booking.event.startTime), 'yyyy-MM-dd HH:mm')}`, 25, 85);
+
+      // Footer
+      doc.setTextColor(250, 250, 250);
+      doc.text('PRESENT THIS DIGITAL RECORD AT ENTRY POINT.', 25, 115);
+
+      doc.save(`EventSphere_Pass_${booking.id}.pdf`);
+      toast.success('PASS_EXTRACTED', { id: 'pdf' });
+    } catch (err) {
+      console.error(err);
+      toast.error('EXTRACTION_FAILED', { id: 'pdf' });
+    }
+  };
 
   const totalBookings = bookings?.length || 0;
   const upcomingBookings = bookings?.filter(b => isFuture(new Date(b.event!.startTime))) || [];
@@ -90,11 +152,20 @@ export default function AttendeeDashboard() {
                       {booking.status}
                     </span>
                   </td>
-                  <td className="px-6 py-5 text-right">
+                  <td className="px-6 py-5 text-right flex justify-end gap-4 items-center">
                     {booking.status === 'CONFIRMED' && (
-                      <button className="text-[#eab308] hover:text-[#fafafa] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#fafafa]">
-                        EXTRACT_PASS
-                      </button>
+                      <>
+                        <button onClick={() => handleExtractPass(booking)} className="text-[#eab308] hover:text-[#fafafa] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#fafafa]">
+                          EXTRACT_PASS
+                        </button>
+                        <button 
+                          onClick={() => handleCancelBooking(booking.id)}
+                          disabled={cancellingId === booking.id}
+                          className="text-[#ef4444] hover:text-[#fafafa] transition-colors text-xs uppercase tracking-widest border-b border-transparent hover:border-[#fafafa] disabled:opacity-50"
+                        >
+                          {cancellingId === booking.id ? 'CANCELLING...' : 'CANCEL'}
+                        </button>
+                      </>
                     )}
                   </td>
                 </tr>
