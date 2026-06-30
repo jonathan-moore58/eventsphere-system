@@ -7,7 +7,9 @@ import { format } from 'date-fns';
 const getImageUrl = (url?: string) => {
   if (!url) return undefined;
   if (url.startsWith('/uploads')) {
-    const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api/v1', '') : 'http://localhost:5000';
+    const isProd = import.meta.env.PROD;
+    const defaultBaseUrl = isProd ? 'https://efficient-reprieve-production-9d02.up.railway.app' : 'http://localhost:5000';
+    const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api/v1', '') : defaultBaseUrl;
     return `${baseUrl}${url}`;
   }
   return url;
